@@ -10,12 +10,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 @Service
 public class RequestServiceImpl implements RequestService {
+    Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
     @Autowired
     CloseableHttpClient httpClient;
     @Autowired
@@ -28,9 +31,8 @@ public class RequestServiceImpl implements RequestService {
             response = httpClient.execute(httpGet);
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
-            System.out.println();
-            System.out.println("响应状态为:" + response.getStatusLine());
-
+           // System.out.println();
+            logger.info("响应状态为:{}"+ response.getStatusLine());
             if (responseEntity != null) {
                 String res = EntityUtils.toString(responseEntity);
 
@@ -39,11 +41,14 @@ public class RequestServiceImpl implements RequestService {
             }
 
         } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (ParseException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.error(e.getMessage());
         } finally {
             try {
                 // 释放资源
@@ -54,7 +59,8 @@ public class RequestServiceImpl implements RequestService {
                     response.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
         return null;
